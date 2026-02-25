@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberScribe — YouTube to Writeup Generator</title>
+  <meta name="description"
+    content="Transform YouTube cybersecurity and bug bounty videos into beautifully formatted Medium-style articles with AI.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+
+
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Animated background -->
+
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">CyberScribe</span>
+      </div>
+      <p class="header-tagline">Transform YouTube videos into premium cybersecurity writeups</p>
+    </div>
+  </header>
+
+  <!-- Input Section -->
+  <section class="input-section">
+    <div class="input-card">
+      <div class="input-header">
+        <h2>Paste a YouTube Video or HackerOne Report</h2>
+        <p>Drop a video URL or H1 report link and let AI craft a detailed writeup</p>
+      </div>
+      <form id="generateForm" class="input-form">
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </span>
+          <input type="url" id="videoUrl" placeholder="https://youtu.be/... or https://hackerone.com/reports/..."
+            required autocomplete="off">
+          <button type="submit" id="generateBtn" class="btn-generate">
+            <span class="btn-text">Generate Writeup</span>
+            <span class="btn-icon">→</span>
+          </button>
+        </div>
+      </form>
+      <div class="divider-or">
+        <span>or</span>
+      </div>
+      <button type="button" id="findGenerateBtn" class="btn-find-generate">
+        <span class="btn-find-icon">🔍</span>
+        <span class="btn-find-text">Find &amp; Generate</span>
+        <span class="btn-find-sub">Auto-discover a trending video</span>
+      </button>
+      <button type="button" id="researchGenerateBtn" class="btn-research-generate">
+        <span class="btn-find-icon">🧠</span>
+        <span class="btn-find-text">Research &amp; Generate</span>
+        <span class="btn-find-sub">Research trending topics from X, LinkedIn, Google &amp; more</span>
+      </button>
+      <div id="errorMessage" class="error-message" style="display:none;"></div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <section id="loadingSection" class="loading-section" style="display:none;">
+    <div class="loading-card">
+      <div class="loading-animation">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring pulse-ring-2"></div>
+        <div class="pulse-ring pulse-ring-3"></div>
+        <div class="loading-icon">🤖</div>
+      </div>
+      <h3>Generating Your Writeup</h3>
+      <p class="loading-status" id="loadingStatus">Sending video to Gemini AI for analysis...</p>
+      <div class="loading-bar">
+        <div class="loading-bar-inner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Posts -->
+  <section id="recentPostsSection" class="recent-posts-section" style="display:none;">
+    <div class="recent-posts-inner">
+      <h2 class="recent-posts-title">📚 Recent Writeups</h2>
+      <div id="recentPostsList" class="recent-posts-list"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>Built with ⚡ Gemini AI · Designed for the cybersecurity community</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

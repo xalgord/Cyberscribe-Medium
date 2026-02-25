@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading... — CyberScribe</title>
+    <meta name="description" content="AI-generated cybersecurity writeup from YouTube video content">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/" style="text-decoration:none;">
+                <div class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">CyberScribe</span>
+                </div>
+            </a>
+            <p class="header-tagline">AI-Powered Cybersecurity Writeups</p>
+        </div>
+    </header>
+
+    <!-- Video Meta Card -->
+    <div class="video-meta-card" id="videoMeta" style="display:none;">
+        <img class="meta-thumbnail" id="metaThumbnail" alt="" />
+        <div class="meta-info">
+            <h3 id="metaTitle"></h3>
+            <p class="meta-author" id="metaAuthor"></p>
+            <a id="metaLink" href="#" target="_blank" class="meta-link">Watch on YouTube →</a>
+        </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="result-actions" id="actionsBar" style="display:none;">
+        <button class="action-btn action-btn-primary" id="btnCopyHtml" title="Copy raw HTML for Medium">
+            <span>📋</span> Copy HTML
+        </button>
+        <button class="action-btn" id="btnPrint" title="Print article">
+            <span>🖨️</span> Print
+        </button>
+        <a class="action-btn" href="/" id="btnNewWriteup">
+            <span>✨</span> New Writeup
+        </a>
+    </div>
+
+    <!-- Article Content -->
+    <div class="article-content" id="articleContent"></div>
+
+    <!-- LinkedIn Promo Section -->
+    <div class="linkedin-section" id="linkedinSection" style="display:none;">
+        <div class="linkedin-card">
+            <div class="linkedin-header">
+                <span class="linkedin-logo">in</span>
+                <span>Promote on LinkedIn</span>
+            </div>
+            <textarea id="linkedinContent" readonly></textarea>
+            <button class="btn-linkedin-copy" id="btnCopyLinkedin">
+                <span>📋</span> Copy Post
+            </button>
+        </div>
+    </div>
+
+    <!-- Post Info Footer -->
+    <div class="post-footer" id="postFooter" style="display:none;">
+        <p id="postDate"></p>
+        <p class="post-permalink">Permalink: <a id="postPermalink" href="#">—</a></p>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-section" id="loadingSection">
+        <div class="loading-card">
+            <div class="loading-animation">
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring pulse-ring-2"></div>
+                <div class="pulse-ring pulse-ring-3"></div>
+                <div class="loading-icon">📄</div>
+            </div>
+            <h3>Loading post...</h3>
+            <div class="loading-bar">
+                <div class="loading-bar-inner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-section" id="errorSection" style="display:none;">
+        <div class="loading-card">
+            <div style="font-size:3rem;margin-bottom:1rem;">😔</div>
+            <h3>Post Not Found</h3>
+            <p style="color:var(--text-muted);margin:1rem 0;">This writeup doesn't exist or may have been removed.</p>
+            <a href="/" class="btn-generate" style="display:inline-flex;text-decoration:none;">
+                <span class="btn-text">Create a New Writeup</span>
+                <span class="btn-icon">→</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>CyberScribe — AI-Powered YouTube → Medium-Style Writeups</p>
+        <p>Built with Gemini AI · Highlight.js</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var pathParts = window.location.pathname.split('/post/');
+            var slug = pathParts.length > 1 ? pathParts[1] : null;
+            if (!slug) { showError(); return; }
+            loadPost(slug);
+        });
+
+        function loadPost(slug) {
+            fetch('/api/posts/' + slug)
+                .then(function (res) {
+                    if (!res.ok) throw new Error('Not found');
+                    return res.json();
+                })
+                .then(function (data) {
+                    renderPost(data);
+                })
+                .catch(function () {
+                    showError();
+                });
+        }
+
+        function showError() {
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'block';
+        }
+
+        function renderPost(data) {
+            // Title
+            document.title = (data.meta && data.meta.title ? data.meta.title : 'Writeup') + ' \u2014 CyberScribe';
+
+            // Video meta card
+            if (data.meta) {
+                document.getElementById('metaThumbnail').src = data.meta.thumbnailUrl;
+                document.getElementById('metaThumbnail').alt = data.meta.title || '';
+                document.getElementById('metaTitle').textContent = data.meta.title;
+                document.getElementById('metaAuthor').textContent = 'by ' + data.meta.author;
+                document.getElementById('metaLink').href = data.meta.videoUrl;
+                document.getElementById('videoMeta').style.display = 'flex';
+            }
+
+            // Article HTML
+            var content = document.getElementById('articleContent');
+            content.innerHTML = data.html;
+
+            // LinkedIn Section
+            if (data.linkedinPost) {
+                document.getElementById('linkedinContent').value = data.linkedinPost;
+                document.getElementById('linkedinSection').style.display = 'flex';
+
+                var btn = document.getElementById('btnCopyLinkedin');
+                btn.onclick = function () {
+                    var text = document.getElementById('linkedinContent').value;
+                    navigator.clipboard.writeText(text).then(function () {
+                        var originalHtml = btn.innerHTML;
+                        btn.innerHTML = '<span>✅</span> Copied!';
+                        setTimeout(function () { btn.innerHTML = originalHtml; }, 2000);
+                    });
+                };
+            }
+
+            // Post footer
+            if (data.createdAt) {
+                document.getElementById('postDate').textContent =
+                    'Generated on ' + new Date(data.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+            }
+            var pl = document.getElementById('postPermalink');
+            pl.href = window.location.href;
+            pl.textContent = window.location.href;
+            document.getElementById('postFooter').style.display = 'block';
+
+            // Show actions, hide loading
+            document.getElementById('actionsBar').style.display = 'flex';
+            document.getElementById('loadingSection').style.display = 'none';
+
+            // Syntax highlighting
+            var codeBlocks = content.querySelectorAll('pre code');
+            for (var i = 0; i < codeBlocks.length; i++) {
+                hljs.highlightElement(codeBlocks[i]);
+            }
+
+
+
+            // Copy HTML button — copies clean HTML for Medium paste
+            document.getElementById('btnCopyHtml').addEventListener('click', function () {
+                navigator.clipboard.writeText(data.html).then(function () {
+                    var b = document.getElementById('btnCopyHtml');
+                    b.innerHTML = '<span>\u2705</span> Copied!';
+                    setTimeout(function () { b.innerHTML = '<span>\uD83D\uDCCB</span> Copy HTML'; }, 2000);
+                });
+            });
+
+            // Print button
+            document.getElementById('btnPrint').addEventListener('click', function () {
+                window.print();
+            });
+        }
+    </script>
+</body>
+
+</html>
