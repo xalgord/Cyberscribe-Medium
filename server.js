@@ -261,7 +261,12 @@ FORMATTING RULES:
    - Add context and background beyond the video
    - Include tool names, CVE IDs, technical details
    - Keep paragraphs SHORT (2-3 sentences max!)
-   - Total: 2500-4000+ words
+   - ARTICLE LENGTH — DYNAMIC & PRACTICAL:
+     * The article length should match the depth and complexity of the topic. Do NOT pad the article with unnecessary stories, analogies, or filler just to hit a word count.
+     * A simple topic might need 1500-2000 words. A complex, multi-step exploit walkthrough might need 3000-4000 words. Let the content dictate the length.
+     * Minimum ~1500 words to ensure substance. No hard upper limit, but every paragraph must earn its place.
+     * Focus on PRACTICAL, ACTIONABLE content: real commands, real tools, real techniques. Skip generic motivational fluff.
+     * If the video covers a hands-on demo, prioritize reproducing every step clearly over adding background essays.
    - Viral, engaging, fun Medium blog style — like a popular tech Twitter thread turned into an article
    - Use conversational tone: "Here's the thing...", "Let me break this down 👇", "You won't believe this but..."
 
@@ -449,6 +454,13 @@ ENGAGEMENT RULES (CRITICAL!):
 - 🖼️ Include 6-8 [IMAGE: ...] markers, in DOODLE / HAND-DRAWN SKETCH style (whiteboard sketches, stick figures, notebook doodles). At least 2-3 should be funny doodle memes.
 - 💬 Write casually like explaining to a friend: "Here's the thing...", "Let that sink in."
 - NEVER use bullets, <ul>, <ol>, or any list elements inside <blockquote>. Blockquotes must contain ONLY plain text. Close the blockquote first, then list separately.
+
+📏 ARTICLE LENGTH — DYNAMIC & PRACTICAL:
+- Do NOT pad the article with unnecessary stories, analogies, or filler just to increase length.
+- Let the complexity of the bug report dictate the article length. A simple XSS might need 1500-2000 words, while a complex RCE chain might need 3000-4000 words.
+- Minimum ~1500 words. No hard upper limit, but every paragraph must earn its place.
+- Focus on PRACTICAL, ACTIONABLE content: show the exact payloads, endpoints, request/response flows. Skip generic "what is XSS" essays if the audience already knows.
+- Prioritize the step-by-step reproduction and technical details over background padding.
 
 Structure the writeup as:
 1. 🏷️ HEADER: <h1> with emoji + italicized attribution line
@@ -852,7 +864,12 @@ FORMATTING RULES:
 6. Write casually, like explaining to a friend
 7. Include 6-8 [IMAGE: ...] markers in DOODLE/HAND-DRAWN SKETCH style (whiteboard sketches, stick figures, notebook doodles)
 8. NEVER put <ul> or <ol> inside <blockquote>
-9. Total length: 2500-4000+ words — be comprehensive but keep each paragraph SHORT
+9. 📏 ARTICLE LENGTH — DYNAMIC & PRACTICAL:
+   - Do NOT pad the article with unnecessary stories, analogies, or filler content just to increase length.
+   - Let the topic's complexity dictate the length. A simple news update might need 1500-2000 words. A deep-dive on a complex exploit chain might need 3000-4000 words.
+   - Minimum ~1500 words to ensure substance. No hard upper limit, but every paragraph must earn its place.
+   - Focus on PRACTICAL, ACTIONABLE content: real commands, real tools, real techniques, real mitigation steps. Skip generic introductions or motivational padding.
+   - Prioritize step-by-step technical walkthroughs and hands-on guidance over storytelling.
 10. Include tool names, CVE IDs, technical details where relevant
 11. Add References & Further Reading section with real links from the research
 12. At the end, add separator "---LINKEDIN-START---" followed by a LinkedIn promo post (100-150 words)
