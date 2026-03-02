@@ -282,32 +282,44 @@ FORMATTING RULES:
 Generate the complete HTML article now, followed by the LinkedIn post. Return ONLY clean HTML with image markers. No markdown, no code fences. Start with <h1>.`;
 }
 
-// Generate images using doodle style
+// Generate images using doodle style (retries up to 5 times)
 async function generateImage(prompt, outputPath) {
-  try {
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
-    const response = await model.generateContent([
-      `Create a fun, hand-drawn DOODLE-STYLE illustration for a cybersecurity blog article. The image should look like a whiteboard sketch or notebook doodle with these characteristics:\n- Simple hand-drawn lines and cute stick figures\n- White or light background with colorful marker-style elements\n- Playful annotations and labels written in a casual handwriting font\n- Fun, approachable, and easy to understand\n- Whiteboard/notebook sketch aesthetic\n- DO NOT include any text that is hard to read\n\nHere is what to illustrate:\n\n${prompt}`
-    ]);
-    const result = await response.response;
+  const MAX_RETRIES = 5;
 
-    // Extract image data from response
-    if (result.candidates && result.candidates[0]) {
-      for (const part of result.candidates[0].content.parts) {
-        if (part.inlineData) {
-          const buffer = Buffer.from(part.inlineData.data, 'base64');
-          fs.writeFileSync(outputPath, buffer);
-          console.log(`    🖼️  Image saved: ${path.basename(outputPath)}`);
-          return true;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
+      const response = await model.generateContent([
+        `Create a fun, hand-drawn DOODLE-STYLE illustration for a cybersecurity blog article. The image should look like a whiteboard sketch or notebook doodle with these characteristics:\n- Simple hand-drawn lines and cute stick figures\n- White or light background with colorful marker-style elements\n- Playful annotations and labels written in a casual handwriting font\n- Fun, approachable, and easy to understand\n- Whiteboard/notebook sketch aesthetic\n- DO NOT include any text that is hard to read\n\nHere is what to illustrate:\n\n${prompt}`
+      ]);
+      const result = await response.response;
+
+      // Extract image data from response
+      if (result.candidates && result.candidates[0]) {
+        for (const part of result.candidates[0].content.parts) {
+          if (part.inlineData) {
+            const buffer = Buffer.from(part.inlineData.data, 'base64');
+            fs.writeFileSync(outputPath, buffer);
+            console.log(`    🖼️  Image saved: ${path.basename(outputPath)}`);
+            return true;
+          }
         }
       }
+      console.log(`    ⚠️  No image data in response (attempt ${attempt}/${MAX_RETRIES})`);
+    } catch (err) {
+      console.error(`    ❌ Image generation failed (attempt ${attempt}/${MAX_RETRIES}): ${err.message}`);
     }
-    console.log(`    ⚠️  No image data in response`);
-    return false;
-  } catch (err) {
-    console.error(`    ❌ Image generation failed: ${err.message}`);
-    return false;
+
+    // If not the last attempt, wait before retrying (exponential backoff)
+    if (attempt < MAX_RETRIES) {
+      const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s, 16s
+      console.log(`    🔄 Retrying in ${delay / 1000}s...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
   }
+
+  console.error(`    ❌ Image generation failed after ${MAX_RETRIES} attempts`);
+  return false;
 }
 
 // Process article: find [IMAGE: ...] markers, generate images, replace with <img> tags
